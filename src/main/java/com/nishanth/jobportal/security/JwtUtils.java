@@ -1,58 +1,61 @@
 package com.nishanth.jobportal.security;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    // Reads from your application.properties
+    @Value("${jobportal.jwt.secret}")
+    private String secretString;
 
-    @Value("${jwt.expiration}")
-    private int jwtExpirationMs;
+    @Value("${jobportal.jwt.expiration}")
+    private long jwtExpirationMs;
 
-    // 1. Generate Token: Creates the "ID Card" for the user
-    public String generateToken(String email) {
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        // This converts your string key into a secure HMAC key
+        this.key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+        System.out.println("!!!!!!!!!! JWT UTILS INITIALIZED WITH PERSISTENT KEY !!!!!!!!!!");
+    }
+
+    public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(key)
                 .compact();
     }
 
-    private Key getSigningKey() {
-        byte[] keyBytes = jwtSecret.getBytes();
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    // 2. Extract Data: Reads the email back from the "ID Card"
     public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
-    // 3. Validation: Checks if the card is fake or expired
+    public String getRoleFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("role", String.class);
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            System.out.println("Invalid JWT: " + e.getMessage());
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 }

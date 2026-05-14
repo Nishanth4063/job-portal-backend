@@ -37,18 +37,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             if (jwtUtils.validateToken(token)) {
                 String email = jwtUtils.getEmailFromToken(token);
+                String role = jwtUtils.getRoleFromToken(token);
+
+                // Add ROLE_ prefix for Spring Security hasRole() compatibility
+                String formattedRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 
+                // DEBUG LOG - Check your terminal for this!
+                System.out.println("AUTH DEBUG: User " + email + " assigned role " + formattedRole);
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         email, 
                         null, 
-                        AuthorityUtils.createAuthorityList("ROLE_USER")
+                        AuthorityUtils.createAuthorityList(formattedRole)
                 );
                 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

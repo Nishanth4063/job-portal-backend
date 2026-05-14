@@ -24,7 +24,6 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
-    // Senior standard: Constructor Injection for all three dependencies
     public AuthController(UserService userService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
@@ -38,20 +37,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // 1. Fetch user by email
+        // IMPORTANT: Ensure this method name matches your UserService.java exactly!
         User user = userService.getUserByEmail(loginRequest.getEmail());
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
 
-        // 2. Compare raw password with the encrypted (BCrypt) password in DB
         if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             
-            // 3. Generate the JWT "Key"
-            String token = jwtUtils.generateToken(user.getEmail());
+            // Matches your new JwtUtils.generateToken(String, String)
+            String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
 
-            // 4. Return the token in a professional JSON format
+            // Using HashMap avoids "AuthResponse cannot be resolved" errors
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("email", user.getEmail());

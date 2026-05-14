@@ -1,5 +1,6 @@
 package com.nishanth.jobportal.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +34,12 @@ public class JobService {
         dto.setSalary(job.getSalary());
         dto.setPostedDate(job.getPostedDate());
         
-        // Only take the name from the User entity to protect privacy
         if (job.getPostedBy() != null) {
             dto.setPostedByName(job.getPostedBy().getName());
         }
         return dto;
     }
 
-    // --- UPDATED FETCH ALL ---
     public List<JobResponseDTO> fetchAllJobs() {
         return jobRepository.findAll()
                 .stream()
@@ -48,11 +47,9 @@ public class JobService {
                 .collect(Collectors.toList());
     }
 
-    // --- UPDATED SEARCH LOGIC ---
     public List<JobResponseDTO> searchJobs(String title, String location) {
         List<Job> jobs;
         if (title != null && !title.isEmpty() && location != null && !location.isEmpty()) {
-            // Logic Fix: Use "And" for specific searches as suggested by Claude
             jobs = jobRepository.findByTitleContainingIgnoreCaseAndLocationContainingIgnoreCase(title, location);
         } else if (title != null && !title.isEmpty()) {
             jobs = jobRepository.findByTitleContainingIgnoreCase(title);
@@ -67,20 +64,31 @@ public class JobService {
                 .collect(Collectors.toList());
     }
 
-    // --- EXISTING SAVE LOGIC ---
+    // --- CRITICAL FIX IN SAVE LOGIC ---
     public Job saveJob(Job job, Long userId) {
         if (userId == null) {
-        throw new IllegalArgumentException("User ID must not be null");
-    }
-
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        if (user.getRole() != Role.EMPLOYER) {
-            throw new RuntimeException("Access Denied: Only Employers can post jobs.");
+            throw new IllegalArgumentException("User ID must not be null");
         }
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        // MENTOR FIX: Changed Role.EMPLOYER to Role.RECRUITER to match your DB/Enum
+        if (user.getRole() != Role.RECRUITER) {
+            throw new RuntimeException("Access Denied: Only Recruiters can post jobs.");
+        }
+
+        // Set the relationship
         job.setPostedBy(user);
+        
+        // Ensure standard fields are set
+        if (job.getPostedDate() == null) {
+            job.setPostedDate(LocalDateTime.now());
+        }
+        
+        // Sync the name field if it exists in your Job entity
+        job.setPostedByName(user.getName());
+
         return jobRepository.save(job);
     }
 }
