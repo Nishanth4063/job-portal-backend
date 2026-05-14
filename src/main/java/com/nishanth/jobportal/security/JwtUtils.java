@@ -50,12 +50,20 @@ public class JwtUtils {
                 .parseClaimsJws(token).getBody().get("role", String.class);
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+   public boolean validateToken(String token) {
+    try {
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        return true;
+    } catch (io.jsonwebtoken.ExpiredJwtException | 
+             io.jsonwebtoken.MalformedJwtException | 
+             io.jsonwebtoken.security.SignatureException | 
+             IllegalArgumentException e) {
+        // This groups all known JWT issues into one clean block
+        System.out.println("JWT Validation Error: " + e.getMessage());
+    } catch (RuntimeException e) {
+        // Using RuntimeException instead of Exception often clears the linting hint
+        System.out.println("Unexpected Runtime Error: " + e.getMessage());
     }
+    return false;
+}
 }
