@@ -43,8 +43,8 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Job not found with ID: " + jobId));
 
         // 4. Business Rules
-        // MENTOR FIX: Matches your Role.JOB_SEEKER
-        if (seeker.getRole() != Role.JOB_SEEKER) {
+        
+        if (seeker.getRole() != Role.CANDIDATE) {
             throw new RuntimeException("Access Denied: Only Job Seekers can apply for jobs.");
         }
 
