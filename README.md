@@ -255,7 +255,7 @@ Every endpoint route has been fully verified using Postman integrations against 
 
 ### 4. Administrative Account Management
 * **Cascading Cascade Deletions:** Verifying relational database cascade structures drop dependent child elements flawlessly.
-  ![Cascading Delete](./documentation/postman-evidence/07_delete_user_cascade_success.png)
+  ![Cascading Delete](./backend/jobportal/documentation/postman-evidence/07_delete_user_cascade_success.png)
 ---
 
 ## 📚 What I Learned
