@@ -240,16 +240,17 @@ Every endpoint route has been fully verified using Postman integrations against 
 
 ### 1. Authentication & Registration Pipelines
 * **User Registration:** Successfully handling encrypted password storage via BCrypt.
-  ![User Registration](./documentation/postman-evidence/01_auth_register_recruiter.png)
+  ![User Registration](./backend/jobportal/documentation/postman-evidence/01_auth_register_recruiter.png)
 * **JWT Token Generation:** Returning secure stateless session strings post-validation.
-  ![JWT Login](./documentation/postman-evidence/02_auth_login_recruiter.png)
+  ![JWT Login](./backend/jobportal/documentation/postman-evidence/02_auth_login_recruiter.png)
 
 ### 2. Recruitment Management
 * **Job Post Creation:** Enforcing strict role validation matching (ROLE_RECRUITER).
-  ![Job Creation](./documentation/postman-evidence/03_job_create_success.png)
+  ![Job Creation](./backend/jobportal/documentation/postman-evidence/03_job_create_success.png)
 
 ### 3. Application Workflow Transitions
 * **Job Application Submission:** Persisting candidate associations with a default PENDING state status.
+  ![Application Pending](./backend/jobportal/documentation/postman-evidence/04_application_submit_pending.png)status.
   ![Application Pending](./documentation/postman-evidence/04_application_submit_pending.png)
 
 ### 4. Administrative Account Management
