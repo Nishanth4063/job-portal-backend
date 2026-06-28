@@ -1,0 +1,46 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">💼</div>
+      <h2>Welcome Back</h2>
+      <p class="auth-subtitle">Log in to manage your applications and view live openings.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="name@example.com" />
+        </div>
+        <span class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+          Please enter a valid corporate email profile.
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="••••••••" />
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid" class="auth-btn">
+        Sign In to Portal
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>New to the platform? <a routerLink="/register">Create an account</a></p>
+    </div>
+  </div>
+</div>

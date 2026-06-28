@@ -1,0 +1,181 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: 2rem 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-surface);
+  border: 1px solid #2d3748;
+  border-radius: var(--radius-card);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.4s ease-out;
+
+  .auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .auth-logo {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem 0;
+      color: var(--text-main);
+    }
+
+    .auth-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+/* 📝 Form Layout & Input Controls */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    input, .custom-select {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid #334155;
+      color: var(--text-main);
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border-radius: var(--radius-input);
+      font-size: 0.95rem;
+      transition: var(--transition-smooth);
+      appearance: none; /* Strips browser native select controls */
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      }
+
+      &::placeholder {
+        color: #475569;
+      }
+
+      /* 🔴 Dynamic Form Control Validation Border States */
+      &.is-invalid {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+      }
+    }
+
+    /* Elegant Custom Dropdown Styling Override */
+    .custom-select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+
+      option {
+        background: var(--bg-surface);
+        color: var(--text-main);
+      }
+    }
+  }
+
+  .error-msg {
+    color: #ef4444;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.125rem;
+  }
+}
+
+/* ⚡ Action Controls */
+.auth-btn {
+  width: 100%;
+  background: var(--color-accent);
+  color: #ffffff;
+  border: none;
+  padding: 0.875rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: var(--transition-smooth);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  &:disabled {
+    background: #334155;
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+
+  p { margin: 0; }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+
+    &:hover {
+      color: var(--color-accent-hover);
+      text-decoration: underline;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

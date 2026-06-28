@@ -51,9 +51,13 @@ public class SecurityConfig {
             
             // 3. Configure endpoint routing parameters
             .authorizeHttpRequests(auth -> auth
-                // MENTOR FIX: Permit all browser preflight OPTIONS handshakes globally
+                // Permit all browser preflight OPTIONS handshakes globally
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
+                
+                // 🎯 FIX: Open up public read-only access to the resumes upload directory to clear 403 blocks
+                .requestMatchers("/uploads/resumes/**").permitAll()
+                
                 .anyRequest().authenticated()
             )
             
@@ -68,11 +72,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // MENTOR FIX: Global CORS Definition to prevent browser cross-origin blocks
+    // Global CORS Definition to prevent browser cross-origin blocks
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Clear Angular app port
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Angular app port
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         configuration.setExposedHeaders(List.of("Authorization"));

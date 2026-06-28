@@ -18,6 +18,10 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     @Query("SELECT a FROM Application a JOIN FETCH a.seeker JOIN FETCH a.job WHERE a.job.id = :jobId")
     List<Application> findByJobId(@Param("jobId") Long jobId);
 
+    // 🎯 MULTI-TENANCY FIX: Fetches applications across all jobs published by this specific recruiter
+    @Query("SELECT a FROM Application a JOIN FETCH a.seeker JOIN FETCH a.job j WHERE j.postedBy.id = :recruiterId")
+    List<Application> findByRecruiterId(@Param("recruiterId") Long recruiterId);
+
     // POLISHED: Refactored to accept raw IDs instead of heavy entity objects to optimize check times
     boolean existsBySeekerIdAndJobId(Long seekerId, Long jobId);
 }

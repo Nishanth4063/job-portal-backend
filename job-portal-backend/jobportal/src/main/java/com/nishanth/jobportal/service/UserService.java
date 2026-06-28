@@ -3,6 +3,7 @@ package com.nishanth.jobportal.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.crypto.password.PasswordEncoder; // 🎯 NEW IMPORT
 import org.springframework.stereotype.Service;
 
 import com.nishanth.jobportal.entity.User;
@@ -13,10 +14,12 @@ import com.nishanth.jobportal.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // 🎯 NEW: Injected Security Bean
 
-    // Constructor Injection (Industry Standard over @Autowired)
-    public UserService(UserRepository userRepository) {
+    // Constructor Injection (Enforces complete initialization)
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -27,16 +30,21 @@ public class UserService {
     }
 
     /**
-     * Persists a new User after validating email uniqueness rules.
+     * Persists a new User after validating email uniqueness and hashing credentials.
      */
     public User registerUser(User user) {
-        if (user == null || user.getEmail() == null) {
-            throw new IllegalArgumentException("User payload and email parameter must not be null");
+        if (user == null || user.getEmail() == null || user.getPassword() == null) {
+            throw new IllegalArgumentException("User payload, email, and password parameters must not be null");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new DuplicateEmailException("Registration Failure: A user with email " + user.getEmail() + " already exists.");
         }
+
+        // 🎯 SECURITY FIX: Intercept raw password, pass through BCrypt, re-assign hashed string
+        String rawPassword = user.getPassword();
+        String secureHashedPassword = passwordEncoder.encode(rawPassword);
+        user.setPassword(secureHashedPassword);
 
         return userRepository.save(user);
     }

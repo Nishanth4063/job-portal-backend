@@ -49,6 +49,11 @@ public class Application {
     @Column(nullable = false, length = 20)
     private String status;
 
+    // 🎯 FIX: Added the missing resumeUrl property to map the database table update
+    // Lombok's @Data will automatically generate getResumeUrl() and setResumeUrl() on compilation
+    @Column(name = "resume_url", length = 500)
+    private String resumeUrl;
+
     // POLISHED: Entity Lifecycle Hook to automatically handle defaults before persisting to database
     @PrePersist
     protected void onCreate() {

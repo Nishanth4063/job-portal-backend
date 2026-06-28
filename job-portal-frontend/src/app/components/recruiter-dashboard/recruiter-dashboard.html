@@ -1,0 +1,151 @@
+<div class="dashboard-container">
+  <h2>Recruiter Management Control Center</h2>
+
+  <div class="metrics-grid">
+    <div class="metric-card hosted-card">
+      <div class="card-label">Total Jobs Hosted</div>
+      <div class="card-value">{{ myPostedJobs.length }}</div>
+    </div>
+    <div class="metric-card applicants-card">
+      <div class="card-label">Total Applications Received</div>
+      <div class="card-value">{{ incomingApplications.length }}</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid-layout">
+    <div class="content-panel form-panel">
+      <div class="panel-header">
+        <h3>📢 Post a New Job Opening</h3>
+      </div>
+      
+      <form (ngSubmit)="onCreateJob()" class="polished-form">
+        <div class="form-group">
+          <label for="jobTitle">Job Title</label>
+          <input 
+            type="text" 
+            id="jobTitle" 
+            [(ngModel)]="newJob.title" 
+            name="title" 
+            required 
+            placeholder="e.g., Senior Java Developer" />
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input 
+            type="text" 
+            id="location" 
+            [(ngModel)]="newJob.location" 
+            name="location" 
+            required 
+            placeholder="e.g., Bengaluru, India" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Job Description</label>
+          <textarea 
+            id="description" 
+            [(ngModel)]="newJob.description" 
+            name="description" 
+            required 
+            rows="4" 
+            placeholder="Describe core roles, responsibilities, and key technology stack expectations..."></textarea>
+        </div>
+
+        <button type="submit" class="publish-btn">Publish Job Listing</button>
+      </form>
+    </div>
+
+    <div class="content-panel table-panel">
+      <div class="panel-header">
+        <h3>💼 Your Active Job Postings</h3>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Job ID</th>
+              <th>Position Title</th>
+              <th>Geographic Location</th>
+              <th>Published Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let job of myPostedJobs">
+              <td class="text-mono">{{ job.id }}</td>
+              <td class="highlight-text">{{ job.title }}</td>
+              <td>📍 {{ job.location }}</td>
+              <td class="text-muted-date">{{ job.postedDate | date:'mediumDate' }}</td>
+            </tr>
+            <tr *ngIf="myPostedJobs.length === 0">
+              <td colspan="4" class="empty-row-msg">You haven't published any job openings yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="content-panel table-panel full-width-panel">
+      <div class="panel-header">
+        <h3>📥 Received Applications</h3>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Application ID</th>
+              <th>Candidate Profile</th>
+              <th>Target Job Position</th>
+              <th>Verification Assets</th> <th>Current Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of incomingApplications">
+              <td class="text-mono">{{ app.id }}</td>
+              
+              <td>
+                <div class="profile-meta">
+                  <strong class="candidate-name">{{ app.seeker?.name || 'Anonymous' }}</strong>
+                  <span class="candidate-email" *ngIf="app.seeker?.email">📧 {{ app.seeker?.email }}</span>
+                </div>
+              </td>
+              
+              <td class="highlight-text">{{ app.job?.title }}</td>
+              
+              <td>
+                <a *ngIf="app.resumeUrl" 
+                   [href]="'http://localhost:8080' + app.resumeUrl" 
+                   target="_blank" 
+                   class="resume-review-link">
+                  📄 View Resume.pdf
+                </a>
+                <span *ngIf="!app.resumeUrl" class="no-asset-hint">
+                  No Resume Attached
+                </span>
+              </td>
+
+              <td>
+                <span class="status-badge" [ngClass]="app.status?.toLowerCase()">
+                  {{ app.status }}
+                </span>
+              </td>
+              <td>
+                <div class="action-btn-group">
+                  <button (click)="onUpdateStatus(app.id, 'ACCEPTED')" class="action-btn accept-btn">Accept</button>
+                  <button (click)="onUpdateStatus(app.id, 'REJECTED')" class="action-btn reject-btn">Reject</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="incomingApplications.length === 0">
+              <td colspan="6" class="empty-row-msg">No candidates have applied to your job postings yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

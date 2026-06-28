@@ -1,0 +1,84 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">🚀</div>
+      <h2>Create Your Account</h2>
+      <p class="auth-subtitle">Join the platform to track your applications and unlock openings.</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+      
+      <!-- Full Name Input Field -->
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input 
+            type="text" 
+            id="name" 
+            formControlName="name" 
+            placeholder="John Doe"
+            [class.is-invalid]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" />
+        </div>
+        <div class="error-msg" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+          Full name is required for profile verification.
+        </div>
+      </div>
+
+      <!-- Email Input Field -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="name@example.com"
+            [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" />
+        </div>
+        <div class="error-msg" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          Please enter a valid corporate email address.
+        </div>
+      </div>
+
+      <!-- Password Input Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Minimum 6 characters"
+            [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" />
+        </div>
+        <div class="error-msg" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          Password must be at least 6 characters long.
+        </div>
+      </div>
+
+      <!-- Account Role Selection Dropdown -->
+      <div class="form-group">
+        <label for="role">Account Type</label>
+        <div class="input-wrapper">
+          <span class="input-icon">💼</span>
+          <select id="role" formControlName="role" class="custom-select">
+            <option value="CANDIDATE">Applicant (Looking for a Job)</option>
+            <option value="RECRUITER">Recruiter (Hiring Candidates)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Submit Action Button -->
+      <button type="submit" [disabled]="registerForm.invalid" class="auth-btn">
+        Register Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login">Login here</a></p>
+    </div>
+  </div>
+</div>

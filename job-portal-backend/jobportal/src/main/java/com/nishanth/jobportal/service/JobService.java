@@ -102,4 +102,19 @@ public class JobService {
         // Convert and return outbound DTO model envelope
         return this.mapToDTO(savedJob);
     }
+
+    /**
+     * 🎯 NEW METHOD: Fetches all jobs posted exclusively by a specific recruiter profile ID
+     * maps them cleanly into a standard outbound stream of JobResponseDTO records.
+     */
+    public List<JobResponseDTO> getJobsByRecruiter(Long recruiterId) {
+        if (recruiterId == null) {
+            throw new IllegalArgumentException("Recruiter ID must not be null");
+        }
+        
+        return jobRepository.findByPostedById(recruiterId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
 }

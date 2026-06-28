@@ -1,0 +1,97 @@
+<header class="portal-navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">💼</span> TechJob Portal
+  </div>
+  <nav class="navbar-actions">
+    <a routerLink="/jobs" class="nav-link active">Explore Jobs</a>
+    
+    <!-- 🎯 FIXED: Dynamic route parameter binding array uses component session method -->
+    <a [routerLink]="['/candidate', getLoggedUserId()]" class="nav-link outline">
+      My Tracking Dashboard
+    </a>
+  </nav>
+</header>
+
+<div class="job-container">
+  <div class="header-section">
+    <h2>Available Positions</h2>
+    <p class="subtitle">Discover your next career milestone backed by verified corporate partners.</p>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span class="alert-icon">✨</span> {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span class="alert-icon">⚠️</span> {{ errorMessage }}
+  </div>
+
+  <div class="search-wrapper">
+    <div class="search-field">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTitle" 
+        (input)="onSearch()" 
+        placeholder="Search by Job Title..." />
+    </div>
+    <div class="search-field">
+      <span class="search-icon">📍</span>
+      <input 
+        type="text" 
+        [(ngModel)]="searchLocation" 
+        (input)="onSearch()" 
+        placeholder="Search by Location..." />
+    </div>
+  </div>
+
+  <div *ngIf="jobs.length === 0 && !errorMessage" class="empty-state">
+    <div class="empty-icon">📁</div>
+    <p>No active job openings found in the database matching your criteria.</p>
+  </div>
+
+  <div class="job-grid" *ngIf="jobs.length > 0">
+    <div class="job-card" *ngFor="let job of jobs">
+      
+      <div class="card-header">
+        <div class="header-main">
+          <h3>{{ job.title }}</h3>
+          <span class="meta-location">📍 {{ job.location }}</span>
+        </div>
+        <div class="company-badge">{{ job.postedByName || 'Enterprise Partner' }}</div>
+      </div>
+
+      <div class="card-body">
+        <p>{{ job.description }}</p>
+      </div>
+
+      <div class="action-tray">
+        <div class="file-upload-box">
+          <label [for]="'resume-' + job.id" class="file-upload-label">
+            📁 Choose Resume (PDF)
+          </label>
+          <input 
+            type="file" 
+            [id]="'resume-' + job.id" 
+            accept="application/pdf" 
+            (change)="onFileSelected($event, job.id)"
+            class="hidden-file-input" />
+          
+          <span class="file-name-hint" *ngIf="selectedFiles[job.id]">
+            Ready: <strong>{{ selectedFiles[job.id].name }}</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button 
+          class="apply-btn" 
+          (click)="onApply(job.id)"
+          [disabled]="!selectedFiles[job.id]">
+          Apply Position Now
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

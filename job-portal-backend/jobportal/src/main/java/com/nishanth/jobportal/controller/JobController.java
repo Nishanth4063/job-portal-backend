@@ -52,4 +52,11 @@ public class JobController {
         List<JobResponseDTO> results = jobService.searchJobs(title, location); 
         return ResponseEntity.ok(results); // 200 OK
     }
+
+    // 🎯 NEW ENDPOINT: GET /api/jobs/recruiter/{recruiterId}
+    @GetMapping("/recruiter/{recruiterId}")
+    public ResponseEntity<List<JobResponseDTO>> getJobsByRecruiter(@PathVariable Long recruiterId) {
+        List<JobResponseDTO> recruiterJobs = jobService.getJobsByRecruiter(recruiterId);
+        return ResponseEntity.ok(recruiterJobs); // 200 OK
+    }
 }

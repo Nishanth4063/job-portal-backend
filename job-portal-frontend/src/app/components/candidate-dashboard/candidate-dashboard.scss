@@ -1,0 +1,136 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+  }
+}
+
+/* 📊 Metrics Section */
+.metrics-grid {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.metric-card {
+  flex: 1;
+  background: var(--bg-surface);
+  border: 1px solid #2d3748;
+  border-radius: var(--radius-card);
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+  }
+
+  &.info-card::before { background: var(--color-accent); }
+  &.success-card::before { background: var(--color-success); }
+
+  .card-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    
+    .info-card & { color: var(--color-accent); }
+    .success-card & { color: var(--color-success); }
+  }
+}
+
+/* 📅 Premium History Timeline Grid Table */
+.timeline-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid #2d3748;
+  border-radius: var(--radius-card);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+
+  .timeline-header h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    color: var(--text-main);
+  }
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+
+  thead {
+    background: var(--bg-primary);
+    
+    th {
+      padding: 1rem;
+      color: var(--text-main);
+      font-weight: 700;
+      border-bottom: 2px solid #2d3748;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #2d3748;
+      transition: var(--transition-smooth);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+    }
+
+    td {
+      padding: 1.25rem 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+
+      &.highlight-text {
+        color: var(--text-main);
+        font-weight: 600;
+      }
+      
+      &.text-muted {
+        color: #64748b;
+      }
+    }
+  }
+}
+
+/* 🏷️ Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.375rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+
+  &.pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+}
