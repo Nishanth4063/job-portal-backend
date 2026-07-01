@@ -5,15 +5,15 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   // 1. Recover active identity tokens directly from persistent browser cache slots
-  const token = localStorage.getItem('token');
-  const role = (localStorage.getItem('role') || '').toUpperCase().trim();
-  const userId = localStorage.getItem('userId');
+  const token = sessionStorage.getItem('token');
+  const role = (sessionStorage.getItem('role') || '').toUpperCase().trim();
+  const userId = sessionStorage.getItem('userId');
 
   // 🛡️ REFRESH RESILIENCY LOGIC BOUNDARY CHECK
   // Relying strictly on stored session tokens so hard reloads do not destroy the routing context
   if (!token || !role || !userId) {
     console.warn('Access Blocked: Persistent authorization markers missing from storage.');
-    localStorage.clear(); // Clear any corrupted structural remnants safely
+    sessionStorage.clear(); // Clear any corrupted structural remnants safely
     router.navigate(['/login']);
     return false;
   }

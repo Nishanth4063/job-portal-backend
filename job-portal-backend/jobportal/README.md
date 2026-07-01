@@ -26,7 +26,7 @@ Recruiter dashboard auto-refreshes → Reviews applications → Accepts / Reject
 - JWT-based stateless authentication (register / login)
 - BCrypt password encryption
 - Custom JWT filter validates token on every request
-- Session stored in `localStorage` (token, role, userId)
+- Session stored in `sessionStorage` (token, role, userId)
 - Auth guard protects all private routes
 
 ### 👤 User Roles

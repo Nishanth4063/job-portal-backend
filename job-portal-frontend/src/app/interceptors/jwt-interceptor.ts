@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Pull the active token out of the secure browser storage layer
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   // If a token exists, clone the request and inject the Authorization Bearer header
   if (token) {

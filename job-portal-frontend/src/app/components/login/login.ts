@@ -27,19 +27,16 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response: any) => {
-          console.log('Spring Boot API Auth Token Received:', response);
+          console.log('Spring Boot API Auth Handshake Complete:', response);
           
-          // ✅ FIX: Save everything including the explicit unique User ID
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('email', response.email);
-          localStorage.setItem('role', response.role);
-          localStorage.setItem('userId', response.id.toString()); // Captured to isolate recruiter data buckets
+          // ✅ PERSISTENCE: Save only the missing user ID (Token/Role are automatically handled by AuthService)
+          sessionStorage.setItem('userId', response.id.toString());
 
-          // ✅ DYNAMIC ROUTING FIX: Route users dynamically based on their roles
+          // ✅ DYNAMIC ROUTING: Navigate based on backend role payload
           if (response.role === 'RECRUITER') {
-            this.router.navigate(['/recruiter']); // Direct recruiter to management dashboard
+            this.router.navigate(['/recruiter']); 
           } else if (response.role === 'CANDIDATE') {
-            this.router.navigate(['/jobs']); // Direct candidate to job seeker browse feed
+            this.router.navigate(['/jobs']); 
           } else {
             console.error('Unknown user role authorization state:', response.role);
             this.router.navigate(['/']);

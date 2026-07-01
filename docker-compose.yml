@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # 1. Database Container (Microsoft SQL Server)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: jobportal-db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrongPassword123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+      - ./init.sql:/opt/init.sql
+    entrypoint: /bin/bash -c "
+      /opt/mssql/bin/sqlservr &
+      echo 'Starting SQL Server engine...';
+      sleep 25;
+      echo 'Executing database initialization script...';
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrongPassword123!' -C -i /opt/init.sql;
+      echo 'Database initialization complete.';
+      wait"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrongPassword123!", "-C", "-Q", "IF EXISTS (SELECT name FROM sys.databases WHERE name = 'JobPortalDB') SELECT 1 ELSE RAISEERROR('Not ready', 16, 1)"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. Backend Container (Spring Boot)
+  backend:
+    build:
+      context: ./job-portal-backend/jobportal
+      dockerfile: Dockerfile
+    container_name: jobportal-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://sqlserver:1433;databaseName=JobPortalDB;encrypt=true;trustServerCertificate=true;
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=YourStrongPassword123!
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+  # 3. Frontend Container (Angular served via Nginx)
+  frontend:
+    build:
+      context: ./job-portal-frontend
+      dockerfile: Dockerfile
+    container_name: jobportal-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mssql_data:

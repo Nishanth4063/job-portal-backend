@@ -33,7 +33,7 @@ export class JobListComponent implements OnInit {
    * Dynamic session accessor method providing the context ID to your HTML template
    */
   getLoggedUserId(): string {
-    return localStorage.getItem('userId') || '0';
+    return sessionStorage.getItem('userId') || '0';
   }
 
   /**
@@ -96,12 +96,12 @@ export class JobListComponent implements OnInit {
       return;
     }
 
-    const savedId = localStorage.getItem('userId');
+    const savedId = sessionStorage.getItem('userId');
     
     // 🎯 SECURITY OPTIMIZATION: If the session ID is missing or evaluates to fallback parameters, eject immediately
     if (!savedId || savedId === '0') {
       this.errorMessage = 'Session expired or invalid. Please log in again to apply.';
-      localStorage.clear();
+      sessionStorage.clear();
       this.router.navigate(['/login']);
       return;
     }

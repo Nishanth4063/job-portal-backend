@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { Router, NavigationEnd } from '@angular/router'; 
-import { Subscription, interval } from 'rxjs'; // 🎯 UPDATED: Injected interval from rxjs package
+import { Subscription, interval } from 'rxjs'; 
 import { filter } from 'rxjs/operators';
 import { JobService, JobResponseDTO } from '../../services/job/job.service';
 
@@ -26,15 +26,14 @@ export class RecruiterDashboardComponent implements OnInit, OnDestroy {
   currentRecruiterId!: number;
 
   private routerSubscription!: Subscription;
-  // 🎯 NEW: Tracking subscription to manage background database polling
   private pollingSubscription!: Subscription;
 
   constructor(private jobService: JobService, private router: Router) {}
 
   ngOnInit(): void {
     // 1. Extract session parameters from browser memory
-    const savedId = localStorage.getItem('userId');
-    const savedRole = localStorage.getItem('role');
+    const savedId = sessionStorage.getItem('userId');
+    const savedRole = sessionStorage.getItem('role');
 
     // 2. Security Check: Block unauthorized users or unauthenticated state requests
     if (!savedId || savedRole !== 'RECRUITER') {
@@ -49,15 +48,14 @@ export class RecruiterDashboardComponent implements OnInit, OnDestroy {
     // 4. Initial multi-tenant data stream retrieval
     this.loadAllDashboardData();
 
-    // 🎯 5. INTERNAL ROUTING RE-SYNC ENGINE
+    // 5. INTERNAL ROUTING RE-SYNC ENGINE
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.loadAllDashboardData();
     });
 
-    // 🎯 6. CROSS-TAB AUTOMATIC SYNC: Runs background pings every 5 seconds 
-    // This dynamically updates the grid if a candidate applies from another browser tab or device!
+    // 6. CROSS-TAB AUTOMATIC SYNC: Runs background pings every 5 seconds 
     this.pollingSubscription = interval(5000).subscribe(() => {
       this.loadIncomingApplications();
     });
@@ -139,13 +137,15 @@ export class RecruiterDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // 🛡️ MEMORY MANAGEMENT: Cleans up both pipelines to protect browser performance
+  // ✅ FIXED: Explicit lifecycle teardown execution
   ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
+      console.log('Router event listeners cleanly torn down.');
     }
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
+      console.log('Recruiter background polling successfully terminated.');
     }
   }
 }

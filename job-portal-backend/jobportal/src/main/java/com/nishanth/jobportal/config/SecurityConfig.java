@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
                 
-                // 🎯 FIX: Open up public read-only access to the resumes upload directory to clear 403 blocks
+                // Public read-only access to the resumes upload directory
                 .requestMatchers("/uploads/resumes/**").permitAll()
                 
                 .anyRequest().authenticated()
@@ -76,7 +76,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Angular app port
+        
+        // 🎯 FIXED: Explicitly added "http://localhost" to trust your Nginx proxy container environment (Port 80)
+        configuration.setAllowedOrigins(List.of("http://localhost", "http://localhost:4200")); 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         configuration.setExposedHeaders(List.of("Authorization"));

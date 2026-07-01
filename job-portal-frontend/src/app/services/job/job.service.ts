@@ -17,8 +17,9 @@ export interface JobResponseDTO {
 })
 export class JobService {
 
-  private apiUrl = 'http://localhost:8080/api/jobs';
-  private appUrl = 'http://localhost:8080/api/applications'; 
+  // ✅ CORRECTED: Changed from hardcoded localhost to relative URLs for Nginx proxy routing
+  private apiUrl = '/api/jobs';
+  private appUrl = '/api/applications'; 
 
   constructor(private http: HttpClient) { }
 

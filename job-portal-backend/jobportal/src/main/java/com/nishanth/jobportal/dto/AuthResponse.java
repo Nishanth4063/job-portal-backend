@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponse {
-    private String token;  // Position 1
-    private String email;  // Position 2
-    private String role;   // Position 3
-    private Long id;       // position 4
+    private String token;
+    private final String type = "Bearer";
+    private String email;
+    private String role;
+    private Long id;
 }

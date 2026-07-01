@@ -8,7 +8,8 @@ import { User, AuthResponse } from '../../models/user';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8080/api/auth';
+  // PRODUCTION FIX: Route relatively through your Nginx docker proxy layer
+  private apiUrl = '/api/auth';
 
   constructor(private http: HttpClient) { }
 
@@ -21,21 +22,23 @@ export class AuthService {
   login(credentials: Pick<User, 'email' | 'password'>): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: AuthResponse) => {
-        // Persist session tokens within the local storage layer
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('email', response.email);
-        localStorage.setItem('role', response.role);
+        // ✅ FIXED: Using sessionStorage to isolate session tokens per browser tab
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('email', response.email);
+        sessionStorage.setItem('role', response.role);
       })
     );
   }
 
   // Helper session management utilities
   getToken(): string | null {
-    return localStorage.getItem('token');
+    // ✅ FIXED: Read token from sessionStorage
+    return sessionStorage.getItem('token');
   }
 
   getRole(): string | null {
-    return localStorage.getItem('role');
+    // ✅ FIXED: Read role from sessionStorage
+    return sessionStorage.getItem('role');
   }
 
   isLoggedIn(): boolean {
@@ -43,6 +46,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.clear();
+    // ✅ FIXED: Clear current tab's sessionStorage session cleanly
+    sessionStorage.clear();
   }
 }

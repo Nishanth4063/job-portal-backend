@@ -8,7 +8,8 @@ import { Application } from '../../models/application';
 })
 export class ApplicationService {
   
-  private apiUrl = 'http://localhost:8080/api/applications';
+  // ✅ CORRECTED: Changed from hardcoded localhost to a relative URL for Nginx proxy routing
+  private apiUrl = '/api/applications';
 
   constructor(private http: HttpClient) { }
 
